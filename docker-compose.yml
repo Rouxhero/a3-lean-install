@@ -1,0 +1,47 @@
+# A3 Lean — installation chez soi
+#   docker compose up -d        puis ouvrir http://localhost:8000
+# Au premier lancement, le modèle d'IA (~2 Go) se télécharge en arrière-plan : l'éditeur marche tout de suite,
+# l'aide à la rédaction (volet ✨ IA) dès que le téléchargement est fini (suivi : docker compose logs -f ollama-pull).
+# Réglages (port, modèle, version…) : fichier .env à côté de celui-ci, voir .env.example.
+#
+# ⚠ L'application n'a pas de connexion : toute personne qui atteint le port peut lire et modifier les rapports.
+#   Par défaut elle n'écoute que sur cette machine (127.0.0.1). Pour l'ouvrir au réseau, la placer derrière
+#   un reverse proxy qui demande une connexion (Authentik, Authelia, Caddy/Nginx + mot de passe…).
+
+services:
+  a3-lean:
+    image: ghcr.io/rouxhero/a3-lean:${A3_VERSION:-latest}
+    ports:
+      - "127.0.0.1:${A3_PORT:-8000}:8000"
+    volumes:
+      - ./data:/data              # rapports, images, versions : sauvegarder ce dossier
+    environment:
+      A3_LLM_URL: ${A3_LLM_URL:-http://ollama:11434/v1}
+      A3_LLM_MODEL: ${A3_LLM_MODEL:-qwen2.5:3b}
+      A3_LLM_API_KEY: ${A3_LLM_API_KEY:-}
+      A3_LLM_TIMEOUT: ${A3_LLM_TIMEOUT:-600}
+      A3_DEV_USER: ${A3_AUTEUR:-moi}  # nom de l'auteur (versions, notes de relecture)
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  # IA locale (CPU suffit ; ~3 Go de RAM pour qwen2.5:3b). Le modèle se décharge après 10 min sans demande.
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ./ollama:/root/.ollama
+    environment:
+      OLLAMA_CONTEXT_LENGTH: 4096
+      OLLAMA_KEEP_ALIVE: 10m
+    restart: unless-stopped
+
+  # Télécharge le modèle s'il manque, puis s'arrête (rien à faire s'il est déjà là)
+  ollama-pull:
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_HOST: ollama:11434
+      MODELE: ${A3_LLM_MODEL:-qwen2.5:3b}
+    entrypoint: ["/bin/sh", "-c", "until ollama list >/dev/null 2>&1; do sleep 2; done; ollama pull \"$$MODELE\""]
+    depends_on:
+      - ollama
+    restart: "no"
