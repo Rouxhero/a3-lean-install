@@ -1,0 +1,22 @@
+# Release à chaque tag v* poussé par le dépôt de développement (notes = message du tag annoté).
+name: Release
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git fetch --force origin "+refs/tags/$TAG:refs/tags/$TAG"
+          gh release create "$TAG" --verify-tag \
+            --title "$(git tag -l --format='%(contents:subject)' "$TAG")" \
+            --notes "$(git tag -l --format='%(contents:body)' "$TAG")"
