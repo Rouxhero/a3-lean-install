@@ -14,7 +14,7 @@ Aide à la rédaction par une IA locale, sans envoyer vos textes ailleurs.
 - **Rapports texte** : un document A4 en Markdown, avec page de garde, sommaire et titres numérotés, relié à son affiche. L'affiche peut imprimer un **QR code** vers le rapport.
 - **Exports** : PDF (A3 ou A4 avec sommaire paginé), image PNG, PowerPoint, Word, et un PDF « dossier » affiche + rapport.
 - **Partage** : lien de lecture, bibliothèque publique protégée par un mot de passe (avec journal des accès).
-- **IA locale** (Ollama, facultative) : reformuler un texte, transformer des notes en affiche, traduire, relecture critique façon coach Lean.
+- **IA locale** (Ollama, facultative) : reformuler un texte, transformer des notes en affiche, traduire, relecture critique façon coach Lean ; dans les rapports texte, menu IA au clic droit (développer, raccourcir, continuer, traduire, consigne libre…) et suggestion de la suite au curseur (Ctrl+Espace, Tab pour accepter).
 - **Travail à plusieurs** : historique des versions, présence, conflits d'enregistrement sans perte, notes de relecture.
 - **Vos données restent des fichiers** : une affiche = un fichier `.yaml`, un rapport = un fichier `.md`, dans un dossier que vous sauvegardez comme vous voulez. Pas de base de données, fonctionne hors ligne.
 
