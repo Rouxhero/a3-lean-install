@@ -47,6 +47,7 @@ Copier [`.env.example`](.env.example) en `.env` à côté de `docker-compose.yml
 | Modèle Ollama plus gros (meilleurs textes, plus de RAM) | `A3_LLM_MODEL=qwen2.5:7b` |
 | Autre serveur compatible OpenAI (OpenAI, LM Studio…) | `A3_LLM_URL`, `A3_LLM_MODEL`, `A3_LLM_API_KEY` |
 | Version fixe | `A3_VERSION=1.1.0` |
+| Couper l'accès des outils IA externes (`/mcp`) | `A3_MCP=0` |
 
 **Sans IA** : supprimer les services `ollama` et `ollama-pull` (et la ligne `depends_on`) dans `docker-compose.yml`. Le reste de l'application fonctionne normalement.
 
@@ -65,6 +66,8 @@ A3 Lean n'a pas de comptes ni de mot de passe : toute personne qui atteint le po
 Pour l'utiliser à plusieurs ou à distance, placez-la derrière un **reverse proxy qui demande une connexion** : Authentik, Authelia, Caddy ou Nginx avec authentification, Tailscale… Si le proxy transmet le nom de la personne dans les en-têtes `X-authentik-username` et `X-authentik-name`, chaque version et chaque note est signée de son nom.
 
 Seule la bibliothèque publique (préfixe `/p/`) est faite pour être ouverte sans compte : elle a son propre mot de passe, ne permet que la lecture des rapports que vous y mettez, et note chaque visite.
+
+De même, l'adresse `/mcp` (outils IA externes : GitHub Copilot dans VS Code, Claude…) peut passer sans la connexion du proxy : A3 Lean y exige un jeton personnel, créé dans ⚙ *Réglages*. Si vous ne vous en servez pas, désactivez-la avec `A3_MCP=0`.
 
 ## Licence
 

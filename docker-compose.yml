@@ -20,6 +20,7 @@ services:
       A3_LLM_MODEL: ${A3_LLM_MODEL:-qwen2.5:3b}
       A3_LLM_API_KEY: ${A3_LLM_API_KEY:-}
       A3_LLM_TIMEOUT: ${A3_LLM_TIMEOUT:-600}
+      A3_MCP: ${A3_MCP:-1}  # outils IA externes (/mcp, jeton personnel) ; 0 = coupé
       A3_DEV_USER: ${A3_AUTEUR:-moi}  # nom de l'auteur (versions, notes de relecture)
     depends_on:
       - ollama
