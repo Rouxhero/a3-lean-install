@@ -57,7 +57,7 @@ Copier [`.env.example`](.env.example) en `.env` à côté de `docker-compose.yml
 docker compose pull && docker compose up -d     # dernière version
 ```
 
-Tout est dans le dossier `data/` (rapports, images, versions) : c'est lui qu'il faut sauvegarder. La version installée s'affiche dans ⚙ *Réglages*. Les versions publiées : [ghcr.io/rouxhero/a3-lean](https://github.com/users/Rouxhero/packages/container/package/a3-lean).
+Tout est dans le dossier `data/` (rapports, images, versions) : c'est lui qu'il faut sauvegarder. La version installée s'affiche dans *Réglages*. Les versions publiées : [ghcr.io/rouxhero/a3-lean](https://github.com/users/Rouxhero/packages/container/package/a3-lean).
 
 ## Travailler à plusieurs : comptes et partage
 
@@ -65,16 +65,16 @@ Par défaut (`A3_AUTH=aucune`), A3 Lean n'a pas de connexion : une seule personn
 
 Avec `A3_AUTH=connexion` (fichier `.env`, voir `.env.example`), une page de connexion protège tout :
 
-- **Code par e-mail** : la personne saisit son adresse et reçoit un code à 6 chiffres (valable 10 minutes). Réglages d'envoi (SMTP) dans `.env` ou dans l'appli, volet 🔐 *Admin* (avec un bouton d'e-mail de test). Sans SMTP, le code est écrit dans les journaux (`docker compose logs a3-lean`) : pratique pour le premier compte.
+- **Code par e-mail** : la personne saisit son adresse et reçoit un code à 6 chiffres (valable 10 minutes). Réglages d'envoi (SMTP) dans `.env` ou dans l'appli, volet *Admin* (avec un bouton d'e-mail de test). Sans SMTP, le code est écrit dans les journaux (`docker compose logs a3-lean`) : pratique pour le premier compte.
 - **SSO OpenID Connect** (Authentik, Keycloak, Google…) : bouton « Se connecter avec … ». Créer chez le fournisseur une application OAuth2/OpenID (client confidentiel) avec la redirection `<adresse publique>/auth/oidc/retour`, puis renseigner l'émetteur, le client ID et le secret.
-- **Administrateurs** : `A3_ADMINS` (e-mails), sinon le premier compte créé. Volet 🔐 *Admin* : SMTP, SSO, qui peut créer un compte (sur invitation, certains domaines, ou toute adresse), liste des comptes (droits d'administration, blocage).
-- **Partage** : chaque personne ne voit que ses dossiers et rapports, et ce qu'on lui partage. Menu `⋯` → *Partager…* (ou 👥 dans l'éditeur) : ajouter une adresse e-mail en *Lecture* ou *Modification* ; partager un dossier donne accès à tout son contenu. L'invitée reçoit un e-mail et se connecte avec cette adresse.
+- **Administrateurs** : `A3_ADMINS` (e-mails), sinon le premier compte créé. Volet *Admin* : SMTP, SSO, qui peut créer un compte (sur invitation, certains domaines, ou toute adresse), liste des comptes (droits d'administration, blocage).
+- **Partage** : chaque personne ne voit que ses dossiers et rapports, et ce qu'on lui partage. Menu `⋯` → *Partager…* (ou dans l'éditeur) : ajouter une adresse e-mail en *Lecture* ou *Modification* ; partager un dossier donne accès à tout son contenu. L'invitée reçoit un e-mail et se connecte avec cette adresse.
 - Les rapports créés avant d'activer la connexion appartiennent aux administrateurs.
 - Ancien fonctionnement derrière un proxy à « forward auth » qui pose `X-authentik-username` / `X-authentik-name` / `X-authentik-email` : `A3_TRUST_PROXY_HEADERS=1` (ne l'activer que si le conteneur n'est joignable que par ce proxy).
 
 Seule la bibliothèque publique (préfixe `/p/`) est faite pour être ouverte sans compte : elle a son propre mot de passe, ne permet que la lecture des rapports que vous y mettez, et note chaque visite.
 
-De même, l'adresse `/mcp` (outils IA externes : GitHub Copilot dans VS Code, Claude…) peut passer sans la connexion du proxy : A3 Lean y exige un jeton personnel, créé dans ⚙ *Réglages*. Si vous ne vous en servez pas, désactivez-la avec `A3_MCP=0`.
+De même, l'adresse `/mcp` (outils IA externes : GitHub Copilot dans VS Code, Claude…) peut passer sans la connexion du proxy : A3 Lean y exige un jeton personnel, créé dans *Réglages*. Si vous ne vous en servez pas, désactivez-la avec `A3_MCP=0`.
 
 ## Licence
 
