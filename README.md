@@ -59,11 +59,18 @@ docker compose pull && docker compose up -d     # dernière version
 
 Tout est dans le dossier `data/` (rapports, images, versions) : c'est lui qu'il faut sauvegarder. La version installée s'affiche dans ⚙ *Réglages*. Les versions publiées : [ghcr.io/rouxhero/a3-lean](https://github.com/users/Rouxhero/packages/container/package/a3-lean).
 
-## ⚠ Sécurité : pas de connexion intégrée
+## Travailler à plusieurs : comptes et partage
 
-A3 Lean n'a pas de comptes ni de mot de passe : toute personne qui atteint le port peut lire et modifier les rapports. C'est pourquoi le `docker-compose.yml` ne l'expose **que sur la machine elle-même** (`127.0.0.1`).
+Par défaut (`A3_AUTH=aucune`), A3 Lean n'a pas de connexion : une seule personne, et le `docker-compose.yml` ne l'expose **que sur la machine elle-même** (`127.0.0.1`).
 
-Pour l'utiliser à plusieurs ou à distance, placez-la derrière un **reverse proxy qui demande une connexion** : Authentik, Authelia, Caddy ou Nginx avec authentification, Tailscale… Si le proxy transmet le nom de la personne dans les en-têtes `X-authentik-username` et `X-authentik-name`, chaque version et chaque note est signée de son nom.
+Avec `A3_AUTH=connexion` (fichier `.env`, voir `.env.example`), une page de connexion protège tout :
+
+- **Code par e-mail** : la personne saisit son adresse et reçoit un code à 6 chiffres (valable 10 minutes). Réglages d'envoi (SMTP) dans `.env` ou dans l'appli, volet 🔐 *Admin* (avec un bouton d'e-mail de test). Sans SMTP, le code est écrit dans les journaux (`docker compose logs a3-lean`) : pratique pour le premier compte.
+- **SSO OpenID Connect** (Authentik, Keycloak, Google…) : bouton « Se connecter avec … ». Créer chez le fournisseur une application OAuth2/OpenID (client confidentiel) avec la redirection `<adresse publique>/auth/oidc/retour`, puis renseigner l'émetteur, le client ID et le secret.
+- **Administrateurs** : `A3_ADMINS` (e-mails), sinon le premier compte créé. Volet 🔐 *Admin* : SMTP, SSO, qui peut créer un compte (sur invitation, certains domaines, ou toute adresse), liste des comptes (droits d'administration, blocage).
+- **Partage** : chaque personne ne voit que ses dossiers et rapports, et ce qu'on lui partage. Menu `⋯` → *Partager…* (ou 👥 dans l'éditeur) : ajouter une adresse e-mail en *Lecture* ou *Modification* ; partager un dossier donne accès à tout son contenu. L'invitée reçoit un e-mail et se connecte avec cette adresse.
+- Les rapports créés avant d'activer la connexion appartiennent aux administrateurs.
+- Ancien fonctionnement derrière un proxy à « forward auth » qui pose `X-authentik-username` / `X-authentik-name` / `X-authentik-email` : `A3_TRUST_PROXY_HEADERS=1` (ne l'activer que si le conteneur n'est joignable que par ce proxy).
 
 Seule la bibliothèque publique (préfixe `/p/`) est faite pour être ouverte sans compte : elle a son propre mot de passe, ne permet que la lecture des rapports que vous y mettez, et note chaque visite.
 

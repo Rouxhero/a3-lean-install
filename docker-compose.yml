@@ -4,9 +4,9 @@
 # l'aide à la rédaction (volet ✨ IA) dès que le téléchargement est fini (suivi : docker compose logs -f ollama-pull).
 # Réglages (port, modèle, version…) : fichier .env à côté de celui-ci, voir .env.example.
 #
-# ⚠ L'application n'a pas de connexion : toute personne qui atteint le port peut lire et modifier les rapports.
-#   Par défaut elle n'écoute que sur cette machine (127.0.0.1). Pour l'ouvrir au réseau, la placer derrière
-#   un reverse proxy qui demande une connexion (Authentik, Authelia, Caddy/Nginx + mot de passe…).
+# Connexion : désactivée par défaut (A3_AUTH=aucune, une seule personne, port ouvert seulement sur cette machine).
+#   Pour travailler à plusieurs : A3_AUTH=connexion dans .env (comptes par code e-mail ou SSO, partage des
+#   dossiers et rapports), voir .env.example et le guide « Travailler à plusieurs ».
 
 services:
   a3-lean:
@@ -21,7 +21,21 @@ services:
       A3_LLM_API_KEY: ${A3_LLM_API_KEY:-}
       A3_LLM_TIMEOUT: ${A3_LLM_TIMEOUT:-600}
       A3_MCP: ${A3_MCP:-1}  # outils IA externes (/mcp, jeton personnel) ; 0 = coupé
-      A3_DEV_USER: ${A3_AUTEUR:-moi}  # nom de l'auteur (versions, notes de relecture)
+      A3_DEV_USER: ${A3_AUTEUR:-moi}  # nom de l'auteur sans connexion (versions, notes de relecture)
+      A3_AUTH: ${A3_AUTH:-aucune}     # connexion = comptes (code par e-mail ou SSO) et partage
+      A3_PUBLIC_URL: ${A3_PUBLIC_URL:-}
+      A3_ADMINS: ${A3_ADMINS:-}
+      A3_TRUST_PROXY_HEADERS: ${A3_TRUST_PROXY_HEADERS:-0}
+      A3_SMTP_HOST: ${A3_SMTP_HOST:-}
+      A3_SMTP_PORT: ${A3_SMTP_PORT:-}
+      A3_SMTP_SECURITY: ${A3_SMTP_SECURITY:-}
+      A3_SMTP_USER: ${A3_SMTP_USER:-}
+      A3_SMTP_PASSWORD: ${A3_SMTP_PASSWORD:-}
+      A3_SMTP_FROM: ${A3_SMTP_FROM:-}
+      A3_OIDC_NAME: ${A3_OIDC_NAME:-}
+      A3_OIDC_ISSUER: ${A3_OIDC_ISSUER:-}
+      A3_OIDC_CLIENT_ID: ${A3_OIDC_CLIENT_ID:-}
+      A3_OIDC_CLIENT_SECRET: ${A3_OIDC_CLIENT_SECRET:-}
     depends_on:
       - ollama
     restart: unless-stopped
